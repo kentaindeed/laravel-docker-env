@@ -65,3 +65,6 @@ migration の実行
 #php fpm docker 内で実行
 php artisan migrate
 ```
+
+
+ここまでこればLaravel の初期画面が見えているはずです。
