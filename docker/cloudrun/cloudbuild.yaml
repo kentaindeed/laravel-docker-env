@@ -58,7 +58,7 @@ steps:
       - 'DB_PASSWORD=${_DB_PASSWORD}'
       - '--entrypoint'
       - 'bash'
-      - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
+      # - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
       - '-c'
       - |
         # Cloud Buildが自動的にCloud SQL Proxyを設定
