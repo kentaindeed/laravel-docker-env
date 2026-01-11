@@ -44,17 +44,17 @@ RUN mkdir -p /var/www/vhosts/example.com/public_html \
     && chown -R www-data:www-data /var/lib/php/wsdlcache
 
 # PHP-FPM設定をコピー
-COPY php-fpm-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
+COPY docker/cloudrun/php-fpm-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
 # nginx設定をコピー
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY default.conf /etc/nginx/sites-available/default
+COPY docker/cloudrun/nginx.conf /etc/nginx/nginx.conf
+COPY docker/cloudrun/default.conf /etc/nginx/sites-available/default
 
 # supervisor設定をコピー
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/cloudrun/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # アプリケーションコードをコピー
-COPY --chown=www-data:www-data ./src /var/www/vhosts/example.com/public_html
+COPY --chown=www-data:www-data src /var/www/vhosts/example.com/public_html
 
 # 作業ディレクトリを設定
 WORKDIR /var/www/vhosts/example.com/public_html
