@@ -31,34 +31,46 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/laravel-app:latest'
 
-  # Laravelマイグレーションを実行（Cloud SQL Proxy経由）
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
+  # Laravelマイグレーションを実行（プッシュしたイメージのwgetを使用）
+  - name: 'gcr.io/cloud-builders/docker'
     args:
+      - 'run'
+      - '--rm'
+      - '--network'
+      - 'host'
+      - '--env'
+      - 'APP_ENV=production'
+      - '--env'
+      - 'APP_DEBUG=false'
+      - '--env'
+      - 'APP_KEY=${_APP_KEY}'
+      - '--env'
+      - 'DB_HOST=127.0.0.1'
+      - '--env'
+      - 'DB_PORT=3306'
+      - '--env'
+      - 'DB_DATABASE=${_DB_DATABASE}'
+      - '--env'
+      - 'DB_USERNAME=${_DB_USERNAME}'
+      - '--env'
+      - 'DB_PASSWORD=${_DB_PASSWORD}'
+      - '--entrypoint'
+      - 'bash'
+      - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
       - '-c'
       - |
-        # curlを使用してCloud SQL Proxyをダウンロード
-        curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
-        chmod +x cloud_sql_proxy
+        # Cloud SQL Proxyをダウンロード wgetを使用
+        wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /tmp/cloud_sql_proxy
+        chmod +x /tmp/cloud_sql_proxy
         
         # Cloud SQL Proxyをバックグラウンドで起動
-        ./cloud_sql_proxy -instances=${_DB_CONNECTION_NAME}=tcp:3306 &
+        /tmp/cloud_sql_proxy -instances=$PROJECT_ID/${_DB_CONNECTION_NAME}=tcp:3306 &
         
         # プロキシが起動するまで待機
-        sleep 10
+        sleep 15
         
         # マイグレーションを実行
-        docker run --rm --network host \
-          --env APP_ENV=production \
-          --env APP_DEBUG=false \
-          --env APP_KEY=${_APP_KEY} \
-          --env DB_HOST=127.0.0.1 \
-          --env DB_PORT=3306 \
-          --env DB_DATABASE=${_DB_DATABASE} \
-          --env DB_USERNAME=${_DB_USERNAME} \
-          --env DB_PASSWORD=${_DB_PASSWORD} \
-          gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA \
-          php artisan migrate --force
+        php artisan migrate --force
 
   # Cloud Runにデプロイ（本番環境設定）
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
