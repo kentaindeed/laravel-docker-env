@@ -71,6 +71,11 @@ RUN chown -R www-data:www-data /var/www/vhosts/example.com/public_html/storage \
     && chmod -R 775 /var/www/vhosts/example.com/public_html/storage \
     && chmod -R 775 /var/www/vhosts/example.com/public_html/bootstrap/cache
 
+# Laravelログを標準出力にリダイレクト（Cloud Logging用）
+RUN mkdir -p /var/www/vhosts/example.com/public_html/storage/logs \
+    && ln -sf /dev/stdout /var/www/vhosts/example.com/public_html/storage/logs/laravel.log \
+    && ln -sf /dev/stderr /var/www/vhosts/example.com/public_html/storage/logs/laravel-error.log
+
 # Cloud Runのポート（8080）を公開
 EXPOSE 8080
 

@@ -87,7 +87,7 @@ steps:
       - '--timeout'
       - '300'
       - '--set-env-vars'
-      - 'APP_ENV=production,APP_DEBUG=false,APP_KEY=${_APP_KEY},DB_CONNECTION=mysql,DB_SOCKET=/cloudsql/${_DB_CONNECTION_NAME},DB_DATABASE=${_DB_DATABASE},DB_USERNAME=${_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD}'
+      - 'APP_ENV=production,APP_DEBUG=false,APP_KEY=${_APP_KEY},DB_CONNECTION=mysql,DB_SOCKET=/cloudsql/${_DB_CONNECTION_NAME},DB_DATABASE=${_DB_DATABASE},DB_USERNAME=${_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD},LOG_CHANNEL=stderr,LOG_STDERR_FORMATTER=Monolog\Formatter\JsonFormatter'
 
 # Cloud Buildトリガーで設定する置換変数
 # トリガー設定の「置換変数」セクションで以下の変数を設定してください
