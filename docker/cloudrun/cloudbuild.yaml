@@ -36,6 +36,8 @@ steps:
     args:
       - '-i'
       - 'gcr.io/$PROJECT_ID/laravel-app:latest'
+      - '-s'
+      - '${_DB_CONNECTION_NAME}' 
       - '-e'
       - DB_CONNECTION=mysql
       - '-e'
