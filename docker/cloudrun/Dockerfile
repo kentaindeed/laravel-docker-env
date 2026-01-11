@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     git \
+    wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # PHP拡張をインストール
