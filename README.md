@@ -23,8 +23,8 @@ composer create-project --prefer-dist laravel/laravel src
 
 ```
 
-php-fpm の変更
-docker php-fpm で実行してください。
+php とつなぎこみの設定
+docker nginx で実行してください。
 ```bash
 ## php fpm docker にログイン
 docker exec -it <nginx docker 名称> bash
