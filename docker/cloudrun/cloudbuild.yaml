@@ -45,9 +45,9 @@ steps:
       - '--env'
       - 'APP_KEY=${_APP_KEY}'
       - '--env'
-      - 'DB_HOST=127.0.0.1'
+      - 'DB_HOST=/cloudsql/${_DB_CONNECTION_NAME}'
       - '--env'
-      - 'DB_PORT=3306'
+      - 'DB_PORT='
       - '--env'
       - 'DB_DATABASE=${_DB_DATABASE}'
       - '--env'
@@ -59,7 +59,8 @@ steps:
       - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
       - '-c'
       - |
-        # マイグレーションを実行
+        # Cloud Buildが自動的にCloud SQL Proxyを設定
+        # Unix socket経由でCloud SQLに接続
         php artisan migrate --force
 
   # Cloud Runにデプロイ（本番環境設定）
@@ -103,7 +104,6 @@ substitutions:
   _DB_PASSWORD: ''  # Cloud Buildトリガーで設定
   _DB_SOCKET:  ''  # Cloud Buildトリガーで設定
   _DB_CONNECTION_NAME: ''  # Cloud SQL接続名（例: project-id:region:instance-name）
-cloudsql_instances: [${_DB_CONNECTION_NAME}]
 # ビルドしたイメージをContainer Registryに保存
 images:
   - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
@@ -113,3 +113,7 @@ images:
 options:
   logging: CLOUD_LOGGING_ONLY
   machineType: 'E2_HIGHCPU_8'
+
+# Cloud SQLインスタンスへの接続
+cloudsql_instances:
+  - ${_DB_CONNECTION_NAME}
