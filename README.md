@@ -27,7 +27,7 @@ php-fpm の変更
 docker php-fpm で実行してください。
 ```bash
 ## php fpm docker にログイン
-docker exec -it <php-fpm docker 名称> bash
+docker exec -it <nginx docker 名称> bash
 
 ## php-fpm 所有者変更
 chown -R www-data:www-data /run/php-fpm/www.sock
