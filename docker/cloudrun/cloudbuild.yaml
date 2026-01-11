@@ -32,38 +32,29 @@ steps:
       - 'gcr.io/$PROJECT_ID/laravel-app:latest'
 
   # Laravelマイグレーションを実行（プッシュしたイメージのwgetを使用）
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'gcr.io/google-appengine/exec-wrapper'
     args:
-      - 'run'
-      - '--rm'
-      - '--network'
-      - 'host'
-      - '-v'
-      - '/cloudsql:/cloudsql'
-      - '--env'
-      - 'APP_ENV=production'
-      - '--env'
-      - 'APP_DEBUG=false'
-      - '--env'
-      - 'APP_KEY=${_APP_KEY}'
-      - '--env'
+      - '-i'
+      - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SH'
+      - '-e'
+      - DB_CONNECTION=mysql
+      - '-e'
       - 'DB_SOCKET=/cloudsql/${_DB_CONNECTION_NAME}'
-      - '--env'
-      - 'DB_PORT='
-      - '--env'
-      - 'DB_DATABASE=${_DB_DATABASE}'
-      - '--env'
-      - 'DB_USERNAME=${_DB_USERNAME}'
-      - '--env'
-      - 'DB_PASSWORD=${_DB_PASSWORD}'
-      - '--entrypoint'
-      - 'bash'
-      # - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
-      - '-c'
-      - |
-        # Cloud Buildが自動的にCloud SQL Proxyを設定
-        # Unix socket経由でCloud SQLに接続
-        php artisan migrate --force
+      - '-e'
+      - DB_PORT=3306
+      - '-e'
+      - DB_DATABASE=$_DB_DATABASE
+      - '-e'
+      - DB_USERNAME=$_DB_USERNAME
+      - '-e'
+      - DB_PASSWORD=$_DB_PASSWORD
+      - '-s'
+      - '$_DB_CONNECTION'
+      - '--'
+      - 'php'
+      - 'artisan'
+      - 'migrate'
+      - '--force'
 
   # Cloud Runにデプロイ（本番環境設定）
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
