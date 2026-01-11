@@ -1,4 +1,12 @@
+# 本番環境用のCloud Build設定
 steps:
+  # GitHubリポジトリからソースコードをクローン
+  - name: 'gcr.io/cloud-builders/git'
+    args:
+      - 'clone'
+      - 'https://github.com/kentaindeed/laravel-kensho-env.git'
+      - 'src'
+
   # Dockerイメージをビルド
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -23,13 +31,13 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/laravel-app:latest'
 
-  # Cloud Runにデプロイ
+  # Cloud Runにデプロイ（本番環境設定）
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
       - 'run'
       - 'deploy'
-      - 'laravel-app'
+      - 'laravel-app-prod'
       - '--image'
       - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
       - '--region'
@@ -40,13 +48,29 @@ steps:
       - '--port'
       - '8080'
       - '--memory'
-      - '1Gi'
+      - '2Gi'
       - '--cpu'
-      - '1'
+      - '2'
       - '--max-instances'
-      - '10'
+      - '100'
+      - '--min-instances'
+      - '1'
+      - '--concurrency'
+      - '80'
+      - '--timeout'
+      - '300'
       - '--set-env-vars'
-      - 'APP_ENV=production,APP_DEBUG=false'
+      - 'APP_ENV=production,APP_DEBUG=false,APP_KEY=${_APP_KEY},DB_HOST=${_DB_HOST},DB_DATABASE=${_DB_DATABASE},DB_USERNAME=${_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD}'
+      - '--set-secrets'
+      - 'APP_KEY=app-key:latest,DB_PASSWORD=db-password:latest'
+
+# 本番環境用の置換変数
+substitutions:
+  _APP_KEY: 'your-app-key-here'
+  _DB_HOST: 'your-db-host'
+  _DB_DATABASE: 'your-database-name'
+  _DB_USERNAME: 'your-db-username'
+  _DB_PASSWORD: 'your-db-password'
 
 # ビルドしたイメージをContainer Registryに保存
 images:
