@@ -12,7 +12,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/laravel-app:$SHORT_SHA'
       - '-t'
       - 'gcr.io/$PROJECT_ID/laravel-app:latest'
       - '-f'
@@ -24,7 +24,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/laravel-app:$SHORT_SHA'
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -35,7 +35,7 @@ steps:
   - name: 'gcr.io/google-appengine/exec-wrapper'
     args:
       - '-i'
-      - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SH'
+      - 'gcr.io/$PROJECT_ID/laravel-app:latest'
       - '-e'
       - DB_CONNECTION=mysql
       - '-e'
@@ -64,7 +64,7 @@ steps:
       - 'deploy'
       - 'laravel-app-prod'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/laravel-app:$SHORT_SHA'
       - '--region'
       - 'asia-northeast1'
       - '--platform'
@@ -99,7 +99,7 @@ substitutions:
   _DB_CONNECTION_NAME: ''  # Cloud SQL接続名（例: project-id:region:instance-name）
 # ビルドしたイメージをContainer Registryに保存
 images:
-  - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/laravel-app:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/laravel-app:latest'
 
 # ビルドオプション
