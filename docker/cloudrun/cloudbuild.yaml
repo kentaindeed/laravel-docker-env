@@ -45,7 +45,7 @@ steps:
       - '--env'
       - 'APP_KEY=${_APP_KEY}'
       - '--env'
-      - 'DB_HOST=/cloudsql/${_DB_CONNECTION_NAME}'
+      - 'DB_SOCKET=/cloudsql/${_DB_CONNECTION_NAME}'
       - '--env'
       - 'DB_PORT='
       - '--env'
