@@ -60,7 +60,7 @@ steps:
       - '-c'
       - |
         # Cloud SQL Proxyをダウンロード wgetを使用
-        wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /tmp/cloud_sql_proxy
+        curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.20.0/cloud-sql-proxy.linux.amd64
         chmod +x /tmp/cloud_sql_proxy
         
         # Cloud SQL Proxyをバックグラウンドで起動
