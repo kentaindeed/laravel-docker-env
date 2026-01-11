@@ -87,18 +87,17 @@ steps:
       - '--timeout'
       - '300'
       - '--set-env-vars'
-      - 'APP_ENV=production,APP_DEBUG=false,APP_KEY=${_APP_KEY},DB_HOST=${_DB_HOST},DB_DATABASE=${_DB_DATABASE},DB_USERNAME=${_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD}'
+      - 'APP_ENV=production,APP_DEBUG=false,APP_KEY=${_APP_KEY},DB_CONNECTION=mysql,DB_SOCKET=/cloudsql/${_DB_CONNECTION_NAME},DB_DATABASE=${_DB_DATABASE},DB_USERNAME=${_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD}'
 
 # Cloud Buildトリガーで設定する置換変数
 # トリガー設定の「置換変数」セクションで以下の変数を設定してください
 substitutions:
   _APP_KEY: ''  # Cloud Buildトリガーで設定
-  _DB_HOST: ''  # Cloud Runデプロイ用（Cloud SQL Private IP）
   _DB_DATABASE: ''  # Cloud Buildトリガーで設定
   _DB_USERNAME: ''  # Cloud Buildトリガーで設定
   _DB_PASSWORD: ''  # Cloud Buildトリガーで設定
-  _DB_SOCKET:  ''  # Cloud Buildトリガーで設定
   _DB_CONNECTION_NAME: ''  # Cloud SQL接続名（例: project-id:region:instance-name）
+
 # ビルドしたイメージをContainer Registryに保存
 images:
   - 'gcr.io/$PROJECT_ID/laravel-app:$SHORT_SHA'
@@ -109,3 +108,6 @@ options:
   logging: CLOUD_LOGGING_ONLY
   machineType: 'E2_HIGHCPU_8'
 
+# Cloud SQLインスタンスへの接続
+cloudsql_instances:
+  - ${_DB_CONNECTION_NAME}

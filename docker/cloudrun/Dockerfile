@@ -30,8 +30,9 @@ ENV PATH $PATH:/composer/vendor/bin
 # Laravel Installerをグローバルインストール
 RUN composer global require "laravel/installer"
 
-# www-dataユーザーを作成・設定
-RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+# www-dataユーザーを作成・設定、nginxユーザーをwww-dataグループに追加
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data \
+    && usermod -a -G www-data nginx
 
 # 必要なディレクトリを作成
 RUN mkdir -p /var/www/vhosts/example.com/public_html \
