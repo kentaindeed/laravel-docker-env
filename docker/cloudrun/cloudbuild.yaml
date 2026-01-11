@@ -38,6 +38,8 @@ steps:
       - '--rm'
       - '--network'
       - 'host'
+      - '-v'
+      - '/cloudsql:/cloudsql'
       - '--env'
       - 'APP_ENV=production'
       - '--env'
