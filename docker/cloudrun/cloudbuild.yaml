@@ -59,16 +59,6 @@ steps:
       - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
       - '-c'
       - |
-        # Cloud SQL Proxyをダウンロード wgetを使用
-        curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.20.0/cloud-sql-proxy.linux.amd64
-        chmod +x /tmp/cloud_sql_proxy
-        
-        # Cloud SQL Proxyをバックグラウンドで起動
-        /tmp/cloud_sql_proxy -instances=$PROJECT_ID/${_DB_CONNECTION_NAME}=tcp:3306 &
-        
-        # プロキシが起動するまで待機
-        sleep 15
-        
         # マイグレーションを実行
         php artisan migrate --force
 
@@ -111,8 +101,9 @@ substitutions:
   _DB_DATABASE: ''  # Cloud Buildトリガーで設定
   _DB_USERNAME: ''  # Cloud Buildトリガーで設定
   _DB_PASSWORD: ''  # Cloud Buildトリガーで設定
+  _DB_SOCKET:  ''  # Cloud Buildトリガーで設定
   _DB_CONNECTION_NAME: ''  # Cloud SQL接続名（例: project-id:region:instance-name）
-
+cloudsql_instances: [${_DB_CONNECTION_NAME}]
 # ビルドしたイメージをContainer Registryに保存
 images:
   - 'gcr.io/$PROJECT_ID/laravel-app:$COMMIT_SHA'
