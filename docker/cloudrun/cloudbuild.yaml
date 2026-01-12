@@ -86,6 +86,8 @@ steps:
       - '80'
       - '--timeout'
       - '300'
+      - '--add-cloudsql-instances'
+      - '${_DB_CONNECTION_NAME}'
       - '--set-env-vars'
       - 'APP_ENV=production,APP_DEBUG=false,APP_KEY=${_APP_KEY},DB_CONNECTION=mysql,DB_SOCKET=/cloudsql/${_DB_CONNECTION_NAME},DB_DATABASE=${_DB_DATABASE},DB_USERNAME=${_DB_USERNAME},DB_PASSWORD=${_DB_PASSWORD},LOG_CHANNEL=stderr,LOG_STDERR_FORMATTER=Monolog\Formatter\JsonFormatter'
 
